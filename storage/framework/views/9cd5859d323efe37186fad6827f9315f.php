@@ -1,0 +1,1 @@
+<?php /**PATH C:\laragon\www\ProjetImmobilier\resources\views/layouts/proprietaire.blade.php ENDPATH**/ ?>
