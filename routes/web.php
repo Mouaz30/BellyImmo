@@ -4,7 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProprietaireController;
+use App\Http\Controllers\BienImmobilierController;
 use App\Models\BienImmobilier;
+use App\Http\Controllers\AccueilController;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,14 +14,18 @@ use App\Models\BienImmobilier;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', function () {
-    $biens = BienImmobilier::with('illustrations')
-        ->where('statut', 'disponible')
-        ->limit(6)
-        ->get();
+// Route::get('/', function () {
+//     $biens = BienImmobilier::with('illustrations')
+//         ->where('statut', 'disponible')
+//         ->limit(6)
+//         ->get();
 
-    return view('front.home', compact('biens')); 
-})->name('home');
+//     return view('front.home', compact('biens')); 
+// })->name('home');
+
+Route::get('/', [AccueilController::class, 'index'])->name('home');
+Route::get('/biens/{id}', [BienImmobilierController::class, 'show'])->name('biens.show');
+
 
 Route::middleware(['auth', 'role:client'])->group(function () {
     Route::get('/client/dashboard', [ClientController::class, 'index'])

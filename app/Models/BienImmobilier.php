@@ -14,13 +14,12 @@ use App\Models\Vente;
 class BienImmobilier extends Model
 {
     /**
-     * Si votre table ne contient pas les colonnes created_at / updated_at.
-     * (Sinon, supprimez cette propriété)
+     * Laravel gère automatiquement created_at / updated_at
      */
-    public $timestamps = false;
+    public $timestamps = true;
 
     /**
-     * Champs autorisés à être remplis en masse (mass assignment)
+     * Champs autorisés
      */
     protected $fillable = [
         'titre',
@@ -33,7 +32,7 @@ class BienImmobilier extends Model
     ];
 
     /**
-     * Casts automatiques pour les attributs du modèle
+     * Casts automatiques
      */
     protected $casts = [
         'prix' => 'decimal:2',
@@ -42,42 +41,41 @@ class BienImmobilier extends Model
     ];
 
     /**
-     * 🔗 Relations
+     * 🔗 Relations Eloquent
      */
 
-    // Un bien peut avoir plusieurs images
+    // Plusieurs images pour un bien
     public function illustrations()
     {
-        return $this->hasMany(IllustrationBien::class);
+        return $this->hasMany(IllustrationBien::class, 'bien_immobilier_id');
     }
 
-    // Un bien appartient à un propriétaire (utilisateur)
+    // Propriétaire du bien
     public function proprietaire()
     {
         return $this->belongsTo(User::class, 'proprietaire_id');
     }
 
-    // Un bien peut avoir plusieurs réservations
+    // Réservations liées au bien
     public function reservations()
     {
         return $this->hasMany(Reservation::class);
     }
 
-    // Un bien peut être loué plusieurs fois
+    // Locations liées
     public function locations()
     {
         return $this->hasMany(Location::class);
     }
 
-    // Un bien peut avoir plusieurs ventes (historique)
+    // Ventes liées
     public function ventes()
     {
         return $this->hasMany(Vente::class);
     }
 
     /**
-     * 🧠 Accesseur personnalisé :
-     * Retourne le nom complet du propriétaire s’il existe
+     * 🧠 Accesseur : nom complet du propriétaire
      */
     public function getProprietaireFullNameAttribute(): ?string
     {
@@ -89,8 +87,7 @@ class BienImmobilier extends Model
     }
 
     /**
-     * 🧩 Accesseur pratique :
-     * Retourne la valeur texte du type (Enum)
+     * Retourne la valeur texte du type
      */
     public function getTypeValueAttribute(): ?string
     {
@@ -98,7 +95,7 @@ class BienImmobilier extends Model
     }
 
     /**
-     * Retourne la valeur texte du statut (Enum)
+     * Retourne la valeur texte du statut
      */
     public function getStatutValueAttribute(): ?string
     {

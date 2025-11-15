@@ -43,23 +43,22 @@ class BienImmobilierController extends Controller
         return view('biens.index', compact('biens'));
     }
 
+   
     /**
-     * Affiche les détails d'un bien
+     * Affiche la page d'un bien immobilier
      */
     public function show($id)
     {
-        $bien = BienImmobilier::with(['illustrations', 'proprietaire'])
-            ->findOrFail($id);
+        $bien = BienImmobilier::with('illustrations', 'proprietaire')->findOrFail($id);
 
-        // Biens similaires pour les suggestions
+        // Biens similaires (optionnel)
         $biensSimilaires = BienImmobilier::with('illustrations')
             ->where('type', $bien->type)
             ->where('id', '!=', $id)
-            ->where('statut', 'DISPONIBLE') // MAJUSCULES
             ->limit(4)
             ->get();
 
-        return view('biens.show', compact('bien', 'biensSimilaires'));
+        return view('front.bien-show', compact('bien', 'biensSimilaires'));
     }
 
     /**

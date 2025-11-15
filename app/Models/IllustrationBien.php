@@ -13,16 +13,20 @@ class IllustrationBien extends Model
     ];
 
     /**
-     * Relation : une illustration appartient à un bien immobilier.
+     * Relation : une illustration appartient à un bien immobilier
      */
     public function bienImmobilier()
     {
-        return $this->belongsTo(BienImmobilier::class);
+        return $this->belongsTo(BienImmobilier::class, 'bien_immobilier_id');
     }
 
-   
+    /**
+     * Accesseur : retourne une URL complète vers l’image stockée
+     */
     public function getImageUrlAttribute($value)
     {
-        return $value ? asset('storage/' . $value) : null;
+        return $value
+            ? asset('storage/' . ltrim($value, '/'))
+            : asset('images/default.png');
     }
 }

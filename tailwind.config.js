@@ -25,5 +25,6 @@ export default {
     plugins: [
         forms, 
         require('flowbite'),
+        require('@tailwindcss/line-clamp'), 
     ],
 };

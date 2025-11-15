@@ -1,5 +1,4 @@
 <script>
-    
     if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
         document.documentElement.classList.add('dark')
     } else {
@@ -23,7 +22,7 @@
             localStorage.setItem('theme', 'light');
         }
     }
-}" class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+}" class="fixed top-0 left-0 w-full z-50 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
 

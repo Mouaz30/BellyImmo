@@ -19,5 +19,5 @@ enum StatutBien: string
             self::RESERVE => 'Réservé',
 
         };
-    }
+    } 
 }
