@@ -10,7 +10,7 @@ enum TypeReservation: string
     public function label(): string
     {
         return match($this) {
-            self::LOCATION => 'Location.php',
+            self::LOCATION => 'Location',
             self::ACHAT => 'Achat',
         };
     }

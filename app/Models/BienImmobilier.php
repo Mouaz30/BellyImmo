@@ -13,14 +13,8 @@ use App\Models\Vente;
 
 class BienImmobilier extends Model
 {
-    /**
-     * Laravel gère automatiquement created_at / updated_at
-     */
     public $timestamps = true;
 
-    /**
-     * Champs autorisés
-     */
     protected $fillable = [
         'titre',
         'prix',
@@ -29,53 +23,50 @@ class BienImmobilier extends Model
         'description',
         'statut',
         'proprietaire_id',
+        'mode_transaction',
     ];
 
     /**
-     * Casts automatiques
+     * Casts ENUM + prix
      */
     protected $casts = [
         'prix' => 'decimal:2',
         'type' => TypeBien::class,
         'statut' => StatutBien::class,
+       // 'mode_transaction' => ModeTransaction::class,
+       'mode_transaction' => \App\Enums\ModeTransaction::class,
     ];
 
     /**
-     * 🔗 Relations Eloquent
+     * Relations
      */
-
-    // Plusieurs images pour un bien
     public function illustrations()
     {
         return $this->hasMany(IllustrationBien::class, 'bien_immobilier_id');
     }
 
-    // Propriétaire du bien
     public function proprietaire()
     {
         return $this->belongsTo(User::class, 'proprietaire_id');
     }
 
-    // Réservations liées au bien
     public function reservations()
     {
         return $this->hasMany(Reservation::class);
     }
 
-    // Locations liées
     public function locations()
     {
         return $this->hasMany(Location::class);
     }
 
-    // Ventes liées
     public function ventes()
     {
         return $this->hasMany(Vente::class);
     }
 
     /**
-     * 🧠 Accesseur : nom complet du propriétaire
+     * Accessors utiles
      */
     public function getProprietaireFullNameAttribute(): ?string
     {
@@ -86,17 +77,11 @@ class BienImmobilier extends Model
         return trim($this->proprietaire->nom . ' ' . $this->proprietaire->prenom);
     }
 
-    /**
-     * Retourne la valeur texte du type
-     */
     public function getTypeValueAttribute(): ?string
     {
         return $this->type?->value;
     }
 
-    /**
-     * Retourne la valeur texte du statut
-     */
     public function getStatutValueAttribute(): ?string
     {
         return $this->statut?->value;

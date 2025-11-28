@@ -10,6 +10,7 @@ class EditBienImmobilier extends EditRecord
 {
     protected static string $resource = BienImmobilierResource::class;
 
+
     protected function getHeaderActions(): array
     {
         return [

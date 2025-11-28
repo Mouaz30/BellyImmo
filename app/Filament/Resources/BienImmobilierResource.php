@@ -7,6 +7,7 @@ use App\Models\BienImmobilier;
 use App\Models\User;
 use App\Enums\TypeBien;
 use App\Enums\StatutBien;
+use App\Enums\ModeTransaction;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -25,139 +26,180 @@ class BienImmobilierResource extends Resource
     protected static ?string $navigationLabel = 'Biens';
     protected static ?string $pluralLabel = 'Biens immobiliers';
 
+    /* ========================= FORM ========================= */
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('titre')
-                    ->label('Titre du bien')
-                    ->required()
-                    ->maxLength(255),
+        return $form->schema([
 
-                Forms\Components\TextInput::make('prix')
-                    ->label('Prix')
-                    ->numeric()
-                    ->prefix('FCFA')
-                    ->required(),
+            Forms\Components\TextInput::make('titre')
+                ->label('Titre du bien')
+                ->required()
+                ->maxLength(255),
 
-                Forms\Components\Textarea::make('adresse')
-                    ->label('Adresse')
-                    ->rows(3)
-                    ->required(),
+            Forms\Components\TextInput::make('prix')
+                ->label('Prix')
+                ->numeric()
+                ->prefix('FCFA')
+                ->required(),
 
-                Forms\Components\Select::make('type')
-                    ->label('Type de bien')
-                    ->options(array_combine(
-                        array_map(fn($e) => $e->value, TypeBien::cases()),
-                        array_map(fn($e) => $e->label(), TypeBien::cases())
-                    ))
-                    ->required(),
+            Forms\Components\Textarea::make('adresse')
+                ->label('Adresse')
+                ->rows(3)
+                ->required(),
 
-                Forms\Components\Select::make('statut')
-                    ->label('Statut')
-                    ->options(array_combine(
-                        array_map(fn($e) => $e->value, StatutBien::cases()),
-                        array_map(fn($e) => $e->label(), StatutBien::cases())
-                    ))
-                    ->default(StatutBien::DISPONIBLE->value)
-                    ->required(),
+            // TYPE DE BIEN (ENUM)
+            Forms\Components\Select::make('type')
+                ->label('Type de bien')
+                ->options(array_combine(
+                    array_map(fn($e) => $e->value, TypeBien::cases()),
+                    array_map(fn($e) => $e->label(), TypeBien::cases())
+                ))
+                ->required(),
 
-                Forms\Components\Select::make('proprietaire_id')
-                    ->label('Propriétaire')
-                    ->options(
-                        User::where('role', 'proprietaire')
-                            ->get()
-                            ->mapWithKeys(fn ($user) => [$user->id => $user->prenom . ' ' . $user->nom])
-                    )
-                    ->searchable()
-                    ->required(),
+            // MODE DE TRANSACTION (ENUM)
+            Forms\Components\Select::make('mode_transaction')
+                ->label('Mode de transaction')
+                ->options(array_combine(
+                    array_map(fn($e) => $e->value, ModeTransaction::cases()),
+                    array_map(fn($e) => $e->label(), ModeTransaction::cases())
+                ))
+                ->required(),
 
-                Forms\Components\RichEditor::make('description')
-                    ->label('Description')
-                    ->columnSpanFull(),
+            // STATUT (ENUM)
+            Forms\Components\Select::make('statut')
+                ->label('Statut')
+                ->options(array_combine(
+                    array_map(fn($e) => $e->value, StatutBien::cases()),
+                    array_map(fn($e) => $e->label(), StatutBien::cases())
+                ))
+                ->default(StatutBien::DISPONIBLE->value)
+                ->required(),
 
-                Repeater::make('illustrations')
-                    ->label('Photos du bien')
-                    ->relationship('illustrations')
-                    ->schema([
-                        TextInput::make('libelle')
-                            ->label('Libellé de la photo')
-                            ->required()
-                            ->maxLength(255),
+            // PROPRIÉTAIRE
+            Forms\Components\Select::make('proprietaire_id')
+                ->label('Propriétaire')
+                ->options(
+                    User::where('role', 'proprietaire')
+                        ->get()
+                        ->mapWithKeys(fn($user) => [$user->id => $user->prenom.' '.$user->nom])
+                )
+                ->searchable()
+                ->required(),
 
-                        FileUpload::make('image_url')
-                            ->label('Image')
-                            ->image()
-                            ->required()
-                            ->directory('biens/illustrations')
-                            ->preserveFilenames()
-                            ->visibility('public')
-                            ->maxSize(2048),
-                    ])
-                    ->columnSpanFull()
-                    ->minItems(0)
-                    ->maxItems(10)
-                    ->itemLabel(fn (array $state): ?string => $state['libelle'] ?? 'Photo'),
-            ]);
+            Forms\Components\RichEditor::make('description')
+                ->label('Description')
+                ->columnSpanFull(),
+
+            // IMAGES
+            Repeater::make('illustrations')
+                ->label('Photos du bien')
+                ->relationship('illustrations')
+                ->schema([
+                    TextInput::make('libelle')
+                        ->label('Libellé')
+                        ->required(),
+
+                    FileUpload::make('image_url')
+                        ->label('Image')
+                        ->image()
+                        ->directory('biens/illustrations')
+                        ->preserveFilenames()
+                        ->visibility('public')
+                        ->required()
+                ])
+                ->columnSpanFull()
+                ->minItems(0)
+                ->maxItems(10),
+        ]);
     }
 
-    /* ----------  TABLEAU  ---------- */
+    /* ========================= TABLE ========================= */
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                Tables\Columns\TextColumn::make('id')
-                    ->label('ID')
-                    ->sortable(),
+        return $table->columns([
 
-                Tables\Columns\TextColumn::make('titre')
-                    ->label('Titre')
-                    ->searchable(),
+            Tables\Columns\TextColumn::make('id')
+                ->label('ID')
+                ->sortable(),
 
-                Tables\Columns\TextColumn::make('type')
-                    ->label('Type')
-                    ->formatStateUsing(fn ($state) => $state instanceof TypeBien ? $state->label() : $state)
-                    ->sortable(),
+            Tables\Columns\TextColumn::make('titre')
+                ->label('Titre')
+                ->searchable(),
 
-                Tables\Columns\TextColumn::make('statut')
-                    ->label('Statut')
-                    ->formatStateUsing(fn ($state) => $state instanceof StatutBien ? $state->label() : $state)
-                    ->badge()
-                    ->color(fn ($state) => match ($state) {
-                        StatutBien::DISPONIBLE->value => 'success',
-                        StatutBien::RESERVE->value => 'warning',
-                        StatutBien::LOUE->value, StatutBien::VENDU->value => 'danger',
-                        default => 'gray',
-                    })
-                    ->sortable(),
+            // TYPE BIEN
+            Tables\Columns\TextColumn::make('type')
+                ->label('Type')
+                ->formatStateUsing(function ($state) {
+                    return $state instanceof TypeBien
+                        ? $state->label()
+                        : TypeBien::from($state)->label();
+                })
+                ->sortable(),
 
-                Tables\Columns\TextColumn::make('prix')
-                    ->label('Prix (FCFA)')
-                    ->numeric()
-                    ->sortable(),
+            // MODE TRANSACTION (FIX SÉCURISÉ)
+            Tables\Columns\TextColumn::make('mode_transaction')
+                ->label('Transaction')
+                ->formatStateUsing(function ($state) {
+                    return $state instanceof ModeTransaction
+                        ? $state->label()
+                        : ModeTransaction::from($state)->label();
+                })
+                ->badge()
+                ->color(function ($state) {
+                    $value = $state instanceof ModeTransaction ? $state->value : $state;
+                    return $value === 'location' ? 'info' : 'success';
+                })
+                ->sortable(),
 
-                Tables\Columns\TextColumn::make('proprietaire.nom')
-                    ->label('Propriétaire')
-                    ->formatStateUsing(fn ($record) => $record->proprietaire?->prenom . ' ' . $record->proprietaire?->nom ?? '-')
-                    ->sortable()
-                    ->searchable(),
+            // STATUT BIEN
+            Tables\Columns\TextColumn::make('statut')
+                ->label('Statut')
+                ->formatStateUsing(fn ($state) =>
+                    $state instanceof StatutBien
+                        ? $state->label()
+                        : StatutBien::from($state)->label()
+                )
+                ->badge()
+                ->color(function ($state) {
+                    $value = $state instanceof StatutBien ? $state->value : $state;
+                    return match ($value) {
+                        'disponible' => 'success',
+                        'reserve'    => 'warning',
+                        'loue', 'vendu' => 'danger',
+                        default      => 'gray',
+                    };
+                })
+                ->sortable(),
 
-                ImageColumn::make('illustrations.image_url')
-                    ->label('Images')
-                    ->circular()
-                    ->stacked()
-                    ->limit(3)
-                    ->size(60)
-                    ->visibility('public'),
-            ])
-            ->filters([])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
-            ]);
+            // PRIX
+            Tables\Columns\TextColumn::make('prix')
+                ->label('Prix (FCFA)')
+                ->numeric()
+                ->sortable(),
+
+            // PROPRIÉTAIRE
+            Tables\Columns\TextColumn::make('proprietaire.nom')
+                ->label('Propriétaire')
+                ->formatStateUsing(fn($record) =>
+                    $record->proprietaire?->prenom .' '. $record->proprietaire?->nom
+                )
+                ->searchable(),
+
+            // IMAGES MULTIPLES (fonctionne avec ton accessor)
+            ImageColumn::make('illustrations.image_url')
+                ->label('Photos')
+                ->size(70)
+                ->stacked()
+                ->limit(3),
+
+        ])
+        ->actions([
+            Tables\Actions\EditAction::make(),
+            Tables\Actions\DeleteAction::make(),
+        ])
+        ->bulkActions([
+            Tables\Actions\DeleteBulkAction::make(),
+        ]);
     }
 
     public static function getRelations(): array

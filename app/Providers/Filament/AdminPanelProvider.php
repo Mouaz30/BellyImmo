@@ -2,21 +2,21 @@
 
 namespace App\Providers\Filament;
 
-use Filament\Http\Middleware\Authenticate;
-use Filament\Http\Middleware\DisableBladeIconComponents;
-use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Support\Colors\Color;
 use Filament\Widgets;
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Filament\Support\Colors\Color;
+use Filament\Http\Middleware\Authenticate;
+use Filament\Http\Middleware\DisableBladeIconComponents;
+use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Routing\Middleware\SubstituteBindings;
-use Illuminate\Session\Middleware\AuthenticateSession;
-use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Session\Middleware\AuthenticateSession;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -26,11 +26,15 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            // ❌ On supprime ->login() pour ne pas activer le login Filament
-            // ✅ Filament utilisera alors la session Breeze déjà active
 
+            // 🎨 Thème personnalisé IMMOBILIER
             ->colors([
-                'primary' => Color::Amber,
+                'primary'   => Color::hex('#2563eb'),  // Bleu pro
+                'secondary' => Color::hex('#0ea5e9'),
+                'info'      => Color::hex('#38bdf8'),
+                'success'   => Color::hex('#10b981'),
+                'warning'   => Color::hex('#f59e0b'),
+                'danger'    => Color::hex('#ef4444'),
             ])
 
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
@@ -40,8 +44,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+              //  Widgets\AccountWidget::class,
+              //  Widgets\FilamentInfoWidget::class,
             ])
 
             ->middleware([

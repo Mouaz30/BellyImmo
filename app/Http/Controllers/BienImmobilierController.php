@@ -19,7 +19,7 @@ class BienImmobilierController extends Controller
         }
 
         $query = BienImmobilier::with('illustrations', 'proprietaire')
-            ->where('statut', 'DISPONIBLE'); // MAJUSCULES
+            ->where('statut', 'DISPONIBLE'); 
 
         // Filtres de recherche
         if ($request->has('ville') && $request->ville) {
@@ -58,7 +58,7 @@ class BienImmobilierController extends Controller
             ->limit(4)
             ->get();
 
-        return view('front.bien-show', compact('bien', 'biensSimilaires'));
+        return view('front.bien_show', compact('bien', 'biensSimilaires'));
     }
 
     /**
@@ -93,7 +93,7 @@ class BienImmobilierController extends Controller
         }
 
         $query = BienImmobilier::with('illustrations')
-            ->where('statut', 'DISPONIBLE') // MAJUSCULES
+            ->where('statut', 'DISPONIBLE') 
             ->where('prix', '>', 0);
 
         if ($request->has('ville') && $request->ville) {
@@ -115,7 +115,7 @@ class BienImmobilierController extends Controller
         }
 
         $query = BienImmobilier::with('illustrations')
-            ->where('statut', 'DISPONIBLE'); // MAJUSCULES
+            ->where('statut', 'DISPONIBLE'); 
 
         if ($request->has('q') && $request->q) {
             $query->where(function($q) use ($request) {
@@ -141,6 +141,20 @@ class BienImmobilierController extends Controller
 
         return view('biens.recherche', compact('biens'));
     }
+
+   
+        /**
+     * Affiche le catalogue de tous les biens
+     */
+    // public function catalogue()
+    // {
+    //     $biens = BienImmobilier::with('illustrations')
+    //         ->where('statut', 'disponible')
+    //         ->orderBy('created_at', 'desc')
+    //         ->paginate(12);
+
+    //     return view('biens.catalogue', compact('biens'));
+    // }
 
     /**
      * Méthodes REST par défaut

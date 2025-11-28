@@ -1,3 +1,107 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* -----------------------------------------
+   STYLE GLOBAL BELLYIMMO
+   ----------------------------------------- */
+
+/* Police plus élégante */
+body {
+    font-family: 'Figtree', sans-serif;
+    background-color: #f7f7f7;
+    color: #1f2937;
+}
+
+/* Liens */
+a {
+    transition: 0.2s ease-in-out;
+}
+
+a:hover {
+    opacity: 0.8;
+}
+
+/* Titres */
+h1, h2, h3, h4 {
+    font-weight: 700;
+    color: #0f172a;
+}
+
+/* Boutons globaux */
+.btn-primary {
+    background-color: #2563eb;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary:hover {
+    background-color: #1d4ed8;
+}
+
+/* Bouton secondaire */
+.btn-secondary {
+    background-color: #f97316;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-secondary:hover {
+    background-color: #ea580c;
+}
+
+/* Cards */
+.card {
+    background: white;
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+}
+
+/* Form Inputs */
+input, textarea, select {
+    border-radius: 8px !important;
+}
+
+/* Section Title */
+.section-title {
+    font-size: 2rem;
+    font-weight: 800;
+    border-left: 6px solid #f97316;
+    padding-left: 12px;
+    margin-bottom: 1.2rem;
+}
+
+/* Animation douce */
+.fade-in {
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Navbar globale */
+.nav-link {
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.nav-link.active,
+.nav-link:hover {
+    background-color: #2563eb;
+    color: white !important;
+}

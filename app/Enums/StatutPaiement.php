@@ -7,7 +7,7 @@ enum StatutPaiement: string
     case EN_ATTENTE = 'en_attente';
     case PAYE = 'paye';
     case ECHEC = 'echec';
-    case REMBOURSE = 'rembourse';
+    case ANNULE = 'annule';
 
     public function label(): string
     {
@@ -15,7 +15,8 @@ enum StatutPaiement: string
             self::EN_ATTENTE => 'En attente',
             self::PAYE => 'Payé',
             self::ECHEC => 'Échec',
-            self::REMBOURSE => 'Remboursé',
+            self::ANNULE => 'Annulé',
         };
     }
 }
+

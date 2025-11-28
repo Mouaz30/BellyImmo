@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('titre');
             $table->decimal('prix', 12, 2);
             $table->string('adresse');
-            $table->string('type'); 
+            $table->string('type');
             $table->text('description')->nullable();
             $table->string('statut')->default('disponible'); 
             $table->foreignId('proprietaire_id')->constrained('users');

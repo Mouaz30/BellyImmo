@@ -16,8 +16,8 @@ return new class extends Migration
             $table->id();
             $table->decimal('montant', 10, 2);
             $table->date('date_paiement');
-            $table->string('methode');        // OM, WAVE, ESPECES, CB
-            $table->string('statut');         // EN_ATTENTE, PAYE, ECHEC
+            $table->string('methode');       
+            $table->string('statut');         
             $table->unsignedBigInteger('reservation_id')->nullable();
             $table->unsignedBigInteger('location_id')->nullable();
             $table->unsignedBigInteger('vente_id')->nullable();

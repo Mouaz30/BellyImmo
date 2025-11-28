@@ -44,6 +44,12 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->nom_complet;
     }
+     
+    public function biens()
+    {
+        return $this->hasMany(\App\Models\BienImmobilier::class, 'proprietaire_id');
+    }
+
 
     public function getUserName(): string
     {

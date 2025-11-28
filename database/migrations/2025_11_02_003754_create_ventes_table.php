@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('ventes', function (Blueprint $table) {
-            $table->id(); // idVente
+            $table->id(); 
             $table->decimal('prix_final', 12, 2);
-            $table->string('statut')->default('confirme'); // CONFIRME, FINALISE, ANNULE
+            $table->string('statut')->default('confirme'); 
             $table->foreignId('bien_immobilier_id')->constrained();
             $table->foreignId('client_id')->constrained('users');
             $table->timestamps();
